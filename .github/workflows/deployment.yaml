@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
+      - name: Inject Kakao Map API Key
+        run: |
+          sed -i 's/__KAKAO_MAP_API_KEY__/${{ secrets.KAKAO_MAP_API_KEY }}/g' index.html
+
+      - name: Inject BRIDE & GROOM Credentials
+        run: |
+          sed -i 's/__GROOM__/${{ secrets.GROOM }}/g' index.html
+          sed -i 's/__BRIDE__/${{ secrets.BRIDE }}/g' index.html
+          sed -i 's/__GROOM_FATHER__/${{ secrets.GROOM_FATHER }}/g' index.html
+          sed -i 's/__GROOM_MOTHER__/${{ secrets.GROOM_MOTHER }}/g' index.html
+          sed -i 's/__BRIDE_FATHER__/${{ secrets.BRIDE_FATHER }}/g' index.html
+          sed -i 's/__BRIDE_MOTHER__/${{ secrets.BRIDE_MOTHER }}/g' index.html
+          sed -i 's/__GROOM_MOBILE__/${{ secrets.GROOM_MOBILE }}/g' index.html
+          sed -i 's/__GROOM_FATHER_MOBILE__/${{ secrets.GROOM_FATHER_MOBILE }}/g' index.html
+          sed -i 's/__GROOM_MOTHER_MOBILE__/${{ secrets.GROOM_MOTHER_MOBILE }}/g' index.html
+          sed -i 's/__BRIDE_MOBILE__/${{ secrets.BRIDE_MOBILE }}/g' index.html
+          sed -i 's/__BRIDE_FATHER_MOBILE__/${{ secrets.BRIDE_FATHER_MOBILE }}/g' index.html
+          sed -i 's/__BRIDE_MOTHER_MOBILE__/${{ secrets.BRIDE_MOTHER_MOBILE }}/g' index.html
+          sed -i 's/__GROOM_ACCOUNT__/${{ secrets.GROOM_ACCOUNT }}/g' index.html
+          sed -i 's/__BRIDE_ACCOUNT__/${{ secrets.BRIDE_ACCOUNT }}/g' index.html
+
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
