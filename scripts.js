@@ -1,16 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. 갤러리 동적 생성 및 슬라이드 기능 추가 ---
+    // --- [기능 추가] 줌 제어 함수 시작 ---
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    const originalContent = viewportMeta.getAttribute('content');
+
+    // 줌 방지 (모달 열릴 때)
+    const disableZoom = () => {
+        // 1. 메타 태그 강제 설정 (Android 등 대응)
+        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        
+        // 2. 터치 이벤트 리스너 추가 (iOS Safari 대응 - 핀치 줌 차단)
+        document.addEventListener('touchmove', preventPinchZoom, { passive: false });
+    };
+
+    // 줌 허용 (모달 닫힐 때)
+    const enableZoom = () => {
+        // 1. 메타 태그 원상복구
+        viewportMeta.setAttribute('content', originalContent);
+        
+        // 2. 터치 이벤트 리스너 제거
+        document.removeEventListener('touchmove', preventPinchZoom);
+    };
+
+    // 핀치 줌(손가락 두개) 감지 시 무시하는 함수
+    const preventPinchZoom = (e) => {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    };
+    // --- [기능 추가] 줌 제어 함수 끝 ---
+
+
+    // --- 1. 갤러리 동적 생성 및 슬라이드 기능 ---
     const galleryContainer = document.getElementById('gallery-container');
     const modal = document.getElementById('modal');
     const modalImage = document.getElementById('modal-image');
     const closeBtn = document.querySelector('.close-btn');
-    const prevBtn = document.querySelector('.prev-btn'); // 새로 추가
-    const nextBtn = document.querySelector('.next-btn'); // 새로 추가
+    const prevBtn = document.querySelector('.prev-btn'); 
+    const nextBtn = document.querySelector('.next-btn'); 
 
-    let currentImageIndex = 0; // 현재 모달에 표시된 이미지의 인덱스
+    let currentImageIndex = 0; 
 
-    // ❗️ 여기에 'images/' 폴더에 넣은 사진 파일명을 순서대로 입력하세요.
+    // ❗️ 실제 이미지 파일명 배열
     const imageFiles = [
         '1900_15695.jpg',
         '1900_15713.jpg',
@@ -22,19 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'snap1.jpg',
     ];
 
-    // (테스트용 임시 이미지 - 실제 사용 시 위 imageFiles 배열을 사용하세요)
-    const placeholderImages = [
-        'https://via.placeholder.com/400x400?text=Photo+1',
-        'https://via.placeholder.com/400x400?text=Photo+2',
-        'https://via.placeholder.com/400x400?text=Photo+3',
-        'https://via.placeholder.com/400x400?text=Photo+4',
-        'https://via.placeholder.com/400x400?text=Photo+5',
-        'https://via.placeholder.com/400x400?text=Photo+6',
-    ];
+    // 테스트용 (사용 안 함)
+    const placeholderImages = [];
 
-    // ❗️ 실제 사용 시 이 부분을 imageFiles로 변경하세요.
     const imagesToLoad = imageFiles.map(file => `images/${file}`);
-    // const imagesToLoad = placeholderImages; // 테스트용
 
     imagesToLoad.forEach((src, index) => {
         const img = document.createElement('img');
@@ -46,54 +68,54 @@ document.addEventListener('DOMContentLoaded', () => {
         img.addEventListener('click', () => {
             modal.style.display = 'flex';
             modalImage.src = src;
-            currentImageIndex = index; // 현재 클릭된 이미지의 인덱스 저장
+            currentImageIndex = index;
+            
+            disableZoom(); // [추가] 줌 방지 실행
         });
         
         galleryContainer.appendChild(img);
     });
 
-    // 모달 닫기
+    // 모달 닫기 함수
     const closeModal = () => {
         modal.style.display = 'none';
+        enableZoom(); // [추가] 줌 허용 실행
     }
+
     closeBtn.addEventListener('click', closeModal);
+    
     modal.addEventListener('click', (e) => {
-        // 이미지 바깥(배경)을 클릭해도 닫히도록
-        // 단, 화살표 버튼이나 이미지 자체 클릭은 제외
         if (e.target === modal) {
             closeModal();
         }
     });
 
-    // 이미지 변경 함수
     const showImage = (index) => {
         if (index < 0) {
-            currentImageIndex = imagesToLoad.length - 1; // 마지막 이미지로 이동
+            currentImageIndex = imagesToLoad.length - 1; 
         } else if (index >= imagesToLoad.length) {
-            currentImageIndex = 0; // 첫 번째 이미지로 이동
+            currentImageIndex = 0; 
         } else {
             currentImageIndex = index;
         }
         modalImage.src = imagesToLoad[currentImageIndex];
     };
 
-    // 이전 버튼 클릭
     prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // 모달 닫힘 방지
+        e.stopPropagation(); 
         showImage(currentImageIndex - 1);
     });
 
-    // 다음 버튼 클릭
     nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // 모달 닫힘 방지
+        e.stopPropagation(); 
         showImage(currentImageIndex + 1);
     });
 
     // --- 2. 카카오맵 연동 ---
-    var container = document.getElementById('kakao-map'); //지도를 담을 영역의 DOM 레퍼런스
-    var options = { //지도를 생성할 때 필요한 기본 옵션
-        center: new kakao.maps.LatLng(37.381654, 126.659911), //지도의 중심좌표.
-        level: 3 //지도의 레벨(확대, 축소 정도)
+    var container = document.getElementById('kakao-map'); 
+    var options = { 
+        center: new kakao.maps.LatLng(37.381654, 126.659911), 
+        level: 3 
     };
     
     var map = new kakao.maps.Map(container, options);
@@ -108,34 +130,28 @@ document.addEventListener('DOMContentLoaded', () => {
     var zoomControl = new kakao.maps.ZoomControl();
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     
-    // --- 3. 계좌번호 복사 기능 --- (이전과 동일)
+    // --- 3. 계좌번호 복사 기능 ---
     const accountButtons = document.querySelectorAll('.account-btn');
 
     accountButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const target = e.target;
-            const bank = target.dataset.bank; // 신랑, 신부
+            const bank = target.dataset.bank; 
             const name = target.dataset.name;
             const account = target.dataset.account;
             
-            // 토글 기능: 버튼 텍스트 변경
             if (target.classList.contains('active')) {
-                // 이미 활성화된 상태 -> 다시 누르면 원상태로
                 target.innerText = `${bank}측 계좌번호 보기`;
                 target.classList.remove('active');
             } else {
-                // 비활성화 상태 -> 계좌번호 표시 및 복사
-                // 모든 버튼 비활성화
                 accountButtons.forEach(btn => {
                     btn.classList.remove('active');
                     btn.innerText = `${btn.dataset.bank}측 계좌번호 보기`;
                 });
                 
-                // 현재 버튼 활성화
                 target.classList.add('active');
                 target.innerText = `${name} | ${account} (클릭하여 복사)`;
                 
-                // 클립보드에 복사
                 navigator.clipboard.writeText(account)
                     .then(() => {
                         alert(`[${name}]님의 계좌번호가 복사되었습니다.\n${account}`);
@@ -155,17 +171,15 @@ document.addEventListener('DOMContentLoaded', () => {
     bgmAudio.volume = 0.6;
     let isPlaying = true;
 
-    // 최초 접속시 무조건 재생 시도(모바일/데스크톱 모두) - 브라우저 차단에 대응
     function forcePlayBgm() {
         if (bgmAudio.paused) {
-            bgmAudio.play().catch(() => {}); // 재생 차단 무시
+            bgmAudio.play().catch(() => {}); 
         }
     }
     window.addEventListener('DOMContentLoaded', forcePlayBgm);
     window.addEventListener('click', forcePlayBgm, { once: true });
     window.addEventListener('touchstart', forcePlayBgm, { once: true });
 
-    // 토글 버튼 작동: 🔊/🔇 이모지와 상태 텍스트 동시 전환
     function updateToggleBtn() {
         if (isPlaying) {
             bgmToggle.textContent = '🔊';
@@ -184,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateToggleBtn();
     });
 
-    // 오디오 정지 이벤트에도 버튼 상태 동기화
     bgmAudio.addEventListener('pause', () => {
         isPlaying = false;
         updateToggleBtn();
@@ -194,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateToggleBtn();
     });
 
-    // (모바일 첫 터치 시도는 유지)
     document.body.addEventListener('touchstart', function oncePlay() {
         if (bgmAudio.paused) {
             bgmAudio.play();

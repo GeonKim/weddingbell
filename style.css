@@ -229,9 +229,11 @@ ul {
     height: 100%;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.9);
-    display: none; /* Flexbox 사용하여 내부 요소 중앙 정렬 */
+    /* display: none; */
     justify-content: center;
-    align-items: center;
+    align-items: center;;
+    /* display: flex; -> JS에서 제어하므로 주석 처리 혹은 삭제해도 됨, 여기선 초기 상태 none 유지 */
+    touch-action: none; /* 모달 내에서 브라우저 기본 터치 액션(확대/축소) 차단 */
 }
 .modal-content {
     margin: auto;
