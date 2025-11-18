@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ❗️ 여기에 'images/' 폴더에 넣은 사진 파일명을 순서대로 입력하세요.
     const imageFiles = [
-        '1900_15713.jpg',
-        '1900_15728.jpg',
-        '1900_15717.jpg',
         '1900_15695.jpg',
+        '1900_15713.jpg',
         '1900_15714.png',
+        '1900_15717.jpg',
         '1900_15723.jpg',
         '1900_15724.jpg',
         '1900_15731.jpg',
