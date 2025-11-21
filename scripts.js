@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         '1900_15724.jpg',
         '1900_15731.jpg',
         'snap1.jpg',
+        'snap2.jpg',
+        'date1.jpg',
         'video1.gif',
         'video2.gif',
     ];
