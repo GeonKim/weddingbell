@@ -45,13 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageFiles = [
         '1900_15695.jpg',
         '1900_15713.jpg',
+        '1900_15685.jpg',
         '1900_15714.png',
-        '1900_15717.jpg',
         'main.png',
+        '1900_15717.jpg',
         '1900_15723.jpg',
         '1900_15724.jpg',
         '1900_15731.jpg',
-        '1900_15685.jpg',
         'snap1.jpg',
     ];
 
