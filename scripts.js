@@ -55,9 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'date1.jpg',
         'date2.jpg',
         'date3.jpg',
-        'video2.gif',
         'snap1.jpg',
         'snap2.jpg',
+        'video2.gif',
     ];
 
     // 테스트용 (사용 안 함)
