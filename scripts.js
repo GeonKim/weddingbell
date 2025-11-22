@@ -52,10 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
         '1900_15723.jpg',
         '1900_15724.jpg',
         '1900_15731.jpg',
+        'date1.jpg',
+        'date2.jpg',
+        'date3.jpg',
+        'video2.gif',
         'snap1.jpg',
         'snap2.jpg',
-        'date1.jpg',
-        'video2.gif',
     ];
 
     // 테스트용 (사용 안 함)
