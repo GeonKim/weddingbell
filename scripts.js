@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'snap1.jpg',
         'snap2.jpg',
         'date1.jpg',
-        'video1.gif',
         'video2.gif',
     ];
 
