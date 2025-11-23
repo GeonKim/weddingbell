@@ -54,7 +54,11 @@ jobs:
           sed -i 's/__BRIDE_FATHER_MOBILE__/${{ secrets.BRIDE_FATHER_MOBILE }}/g' index.html
           sed -i 's/__BRIDE_MOTHER_MOBILE__/${{ secrets.BRIDE_MOTHER_MOBILE }}/g' index.html
           sed -i 's/__GROOM_ACCOUNT__/${{ secrets.GROOM_ACCOUNT }}/g' index.html
+          sed -i 's/__GROOM_FATHER_ACCOUNT__/${{ secrets.GROOM_FATHER_ACCOUNT }}/g' index.html
+          sed -i 's/__GROOM_MOTHER_ACCOUNT__/${{ secrets.GROOM_MOTHER_ACCOUNT }}/g' index.html
           sed -i 's/__BRIDE_ACCOUNT__/${{ secrets.BRIDE_ACCOUNT }}/g' index.html
+          sed -i 's/__BRIDE_FATHER_ACCOUNT__/${{ secrets.BRIDE_FATHER_ACCOUNT }}/g' index.html
+          sed -i 's/__BRIDE_MOTHER_ACCOUNT__/${{ secrets.BRIDE_MOTHER_ACCOUNT }}/g' index.html                    
 
 
       - name: Upload artifact
