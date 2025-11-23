@@ -148,12 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const account = target.dataset.account;
             
             if (target.classList.contains('active')) {
-                target.innerText = `${bank}측 계좌번호 보기`;
+                target.innerText = `${bank} 계좌번호 보기`;
                 target.classList.remove('active');
             } else {
                 accountButtons.forEach(btn => {
                     btn.classList.remove('active');
-                    btn.innerText = `${btn.dataset.bank}측 계좌번호 보기`;
+                    btn.innerText = `${btn.dataset.bank} 계좌번호 보기`;
                 });
                 
                 target.classList.add('active');
