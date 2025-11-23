@@ -137,36 +137,49 @@ document.addEventListener('DOMContentLoaded', () => {
     var zoomControl = new kakao.maps.ZoomControl();
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     
-    // --- 3. 계좌번호 복사 기능 ---
+    // --- 3. 계좌번호 복사 기능 (모든 버튼 통합) ---
     const accountButtons = document.querySelectorAll('.account-btn');
 
     accountButtons.forEach(button => {
         button.addEventListener('click', (e) => {
-            const target = e.target;
-            const bank = target.dataset.bank; 
-            const name = target.dataset.name;
-            const account = target.dataset.account;
+            // e.target 대신 e.currentTarget을 사용하여 이벤트가 걸린 버튼 자체를 확실하게 가져옵니다.
+            const target = e.currentTarget; 
             
+            const bank = target.dataset.bank;    // 예: 신랑, 신랑 아버지...
+            const name = target.dataset.name;    // 예: 홍길동
+            const account = target.dataset.account; // 예: 123-456...
+
+            // 1. 이미 열려있는 버튼을 다시 클릭했을 때 (닫기 기능)
             if (target.classList.contains('active')) {
-                target.innerText = `${bank} 계좌번호 보기`;
                 target.classList.remove('active');
-            } else {
+                target.innerText = `${bank} 계좌번호 보기`;
+            } 
+            // 2. 닫혀있는 버튼을 클릭했을 때 (열기 + 복사 기능)
+            else {
+                // 다른 모든 버튼을 초기화(닫기) 합니다.
                 accountButtons.forEach(btn => {
                     btn.classList.remove('active');
                     btn.innerText = `${btn.dataset.bank} 계좌번호 보기`;
                 });
-                
+
+                // 현재 버튼 활성화 및 텍스트 변경
                 target.classList.add('active');
-                target.innerText = `${name} | ${account} (클릭하여 복사)`;
-                
-                navigator.clipboard.writeText(account)
-                    .then(() => {
-                        alert(`[${name}]님의 계좌번호가 복사되었습니다.\n${account}`);
-                    })
-                    .catch(err => {
-                        console.error('계좌번호 복사 실패:', err);
-                        alert('계좌번호 복사에 실패했습니다.');
-                    });
+                target.innerText = `${name} | ${account}`;
+
+                // 계좌번호 복사 로직
+                if (account) {
+                    navigator.clipboard.writeText(account)
+                        .then(() => {
+                            // 복사 성공 시 알림
+                            alert(`[${name}]님의 계좌번호가 복사되었습니다.\n${account}`);
+                        })
+                        .catch(err => {
+                            console.error('계좌번호 복사 실패:', err);
+                            alert('계좌번호 복사에 실패했습니다. 직접 입력해주세요.');
+                        });
+                } else {
+                    alert('계좌번호 정보가 없습니다.');
+                }
             }
         });
     });
