@@ -137,37 +137,57 @@ document.addEventListener('DOMContentLoaded', () => {
     var zoomControl = new kakao.maps.ZoomControl();
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     
-    // --- 3. 계좌번호 복사 기능 ---
-    const accountButtons = document.querySelectorAll('.account-btn');
+    // --- 3. 계좌번호 복사 기능 (통합) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // 1. 모든 계좌 버튼을 선택합니다. (신랑, 신부, 양가 부모님 포함 총 6개)
+        const accountButtons = document.querySelectorAll('.account-btn');
 
-    accountButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const target = e.target;
-            const bank = target.dataset.bank; 
-            const name = target.dataset.name;
-            const account = target.dataset.account;
-            
-            if (target.classList.contains('active')) {
-                target.innerText = `${bank} 계좌번호 보기`;
-                target.classList.remove('active');
-            } else {
+        accountButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // e.target 대신 e.currentTarget을 사용하여 클릭된 버튼 요소를 정확히 가져옵니다.
+                const targetBtn = e.currentTarget;
+                
+                // HTML 태그에 있는 data- 속성값들을 가져옵니다.
+                const bank = targetBtn.dataset.bank;       // 예: "신랑 아버지"
+                const name = targetBtn.dataset.name;       // 예: "홍길동"
+                const account = targetBtn.dataset.account; // 예: "123-45-67890"
+
+                // 1) 이미 열려있는(active) 버튼을 다시 누른 경우 -> 닫기(초기화)
+                if (targetBtn.classList.contains('active')) {
+                    targetBtn.classList.remove('active');
+                    targetBtn.innerText = `${bank} 계좌번호 보기`;
+                    return; // 복사 로직 실행 안 함
+                }
+
+                // 2) 닫혀있는 버튼을 누른 경우
+                
+                // 우선, 다른 모든 버튼을 초기 상태로 되돌립니다 (하나만 열리게 하기 위함)
                 accountButtons.forEach(btn => {
                     btn.classList.remove('active');
+                    // 각 버튼의 원래 라벨(data-bank 활용)로 복구
                     btn.innerText = `${btn.dataset.bank} 계좌번호 보기`;
                 });
-                
-                target.classList.add('active');
-                target.innerText = `${name} | ${account} (클릭하여 복사)`;
-                
-                navigator.clipboard.writeText(account)
-                    .then(() => {
-                        alert(`[${name}]님의 계좌번호가 복사되었습니다.\n${account}`);
-                    })
-                    .catch(err => {
-                        console.error('계좌번호 복사 실패:', err);
-                        alert('계좌번호 복사에 실패했습니다.');
-                    });
-            }
+
+                // 클릭된 버튼만 활성화 상태로 변경
+                targetBtn.classList.add('active');
+                targetBtn.innerText = `${name} | ${account} (클릭하여 복사)`;
+
+                // 클립보드 복사 로직
+                if (account) {
+                    navigator.clipboard.writeText(account)
+                        .then(() => {
+                            alert(`[${name}]님의 계좌번호가 복사되었습니다.\n${account}`);
+                        })
+                        .catch(err => {
+                            console.error('계좌번호 복사 실패:', err);
+                            // 보안 문제(HTTPS 아님 등)로 실패 시 fallback
+                            prompt('Ctrl+C를 눌러 복사하세요.', account); 
+                        });
+                } else {
+                    alert('계좌번호 정보가 없습니다.');
+                }
+            });
         });
     });
 
