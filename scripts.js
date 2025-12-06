@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var container = document.getElementById('kakao-map'); 
     var options = { 
         center: new kakao.maps.LatLng(37.381654, 126.659911), 
-        level: 3 
+        level: 4
     };
     
     var map = new kakao.maps.Map(container, options);
